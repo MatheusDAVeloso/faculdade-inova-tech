@@ -7,6 +7,7 @@
 #include "CameraType.h"
 #include "WindowManager.h"
 #include "WindowType.h"
+#include "RolledPaperDetector.h"
 
 int main() {
 #if defined(__linux__)
@@ -38,8 +39,9 @@ int main() {
     return 1;
   }
 
+  RolledPaperDetector detector;
   CameraPreview preview;
-  if (!preview.run(*camera, *window)) {
+  if (!preview.run(*camera, *window, detector)) {
     std::cerr << "Camera preview stopped because frame capture failed.\n";
     return 1;
   }

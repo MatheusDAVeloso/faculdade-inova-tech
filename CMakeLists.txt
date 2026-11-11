@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(BitucaZero LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(OpenCV REQUIRED COMPONENTS core highgui videoio)
+find_package(OpenCV REQUIRED COMPONENTS core highgui imgproc videoio)
 
 add_library(camera_module
   src/camera/CameraManager.cpp
@@ -16,6 +16,16 @@ target_include_directories(camera_module PUBLIC
 )
 target_link_libraries(camera_module PUBLIC ${OpenCV_LIBS})
 target_compile_features(camera_module PUBLIC cxx_std_17)
+
+add_library(vision_module
+  src/vision/RolledPaperDetector.cpp
+)
+target_include_directories(vision_module PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/vision
+  ${OpenCV_INCLUDE_DIRS}
+)
+target_link_libraries(vision_module PUBLIC ${OpenCV_LIBS})
+target_compile_features(vision_module PUBLIC cxx_std_17)
 
 if(WIN32)
   set(WINDOW_PLATFORM_SOURCE src/window/platform/windows/WindowsWindow.cpp)
@@ -48,3 +58,4 @@ target_include_directories(camera_preview PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/apps/camera_preview
 )
 target_link_libraries(camera_preview PRIVATE camera_module window_module)
+target_link_libraries(camera_preview PRIVATE vision_module)
